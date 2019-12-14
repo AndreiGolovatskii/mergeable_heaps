@@ -79,7 +79,7 @@ TEST(CommonsStressTest, InsertAndEraseTestInt) {
         skew_h.insert(x);
       }
     }
-  
+
   ASSERT_TRUE(isEqual(test_h, bin_h));
   ASSERT_TRUE(isEqual(test_h, left_h));
   ASSERT_TRUE(isEqual(test_h, skew_h));

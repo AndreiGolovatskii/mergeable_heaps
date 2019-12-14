@@ -10,6 +10,7 @@ std::vector<T> toVector(H<T> in) {
     arr.push_back(in.top());
     in.erase();
   }
+  return arr;
 }
 
 template<template<class> class H1, template<class> class H2, typename T>

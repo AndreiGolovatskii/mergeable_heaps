@@ -181,8 +181,10 @@ void BinomialHeap<T>::merge(BinomialHeap<T> &&other) {
     } else {
       if (first_degree > second_degree) {
         std::swap(first, second);
+        std::swap(next_first, next_second);
       }
       tmp = first;
+      tmp->sibling = nullptr;
       first = next_first;
     }
     if (res == nullptr) {
@@ -210,6 +212,7 @@ void BinomialHeap<T>::merge(BinomialHeap<T> &&other) {
       tmp->sibling = nxt;
       curr = tmp;
     } else {
+      prev = curr;
       curr = curr->sibling;
     }
   }
