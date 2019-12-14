@@ -48,15 +48,14 @@ class BinomialHeap: public IHeap<T> {
             degree(degree) {}
     Node_(T &&key,
           size_t degree)
-          : child(0),
+          : key(key),
+            child(0),
             sibling(0),
-            degree(degree) {
-              this->key = key;
-            }
+            degree(degree) {}
   };
   static std::shared_ptr<Node_> deepCopy_(const std::shared_ptr<Node_> &head);
-  static std::shared_ptr<Node_> merge_(std::shared_ptr<Node_> &a,
-                                       std::shared_ptr<Node_> &b);
+  static std::shared_ptr<Node_> merge_(std::shared_ptr<Node_> a,
+                                       std::shared_ptr<Node_> b);
   std::shared_ptr<Node_> findMinNode_() const;
 
   std::shared_ptr<Node_> head_;
@@ -64,46 +63,19 @@ class BinomialHeap: public IHeap<T> {
 };
 
 template<typename T>
-std::shared_ptr<typename BinomialHeap<T>::Node_>
-BinomialHeap<T>::deepCopy_(const std::shared_ptr<Node_> &head) {
-  if (head == nullptr) {
-    return nullptr;
-  }
-  std::shared_ptr<Node_> new_head(new Node_(head->key, head->degree));
-  new_head->sibling = deepCopy_(head->sibling);
-  new_head->child = deepCopy_(head->child);
-  return new_head;
+BinomialHeap<T>::BinomialHeap(): head_(nullptr), size_(0) {
 }
 
 template<typename T>
-std::shared_ptr<typename BinomialHeap<T>::Node_>
-BinomialHeap<T>::findMinNode_() const {
-  std::shared_ptr<Node_> ans = head_, current = head_;
-  while (current) {
-    if (current->key < ans->key) {
-      ans = current;
-    }
-    current = current->sibling;
-  }
-  return ans;
-}
-
-template<typename T>
-BinomialHeap<T>::BinomialHeap() {
-  head_ = nullptr;
-  size_ = 0;
-}
-
-template<typename T>
-BinomialHeap<T>::BinomialHeap(const BinomialHeap<T> &src) {
-  head_ = deepCopy_(src.head_);
-  size_ = src.size_;
+BinomialHeap<T>::BinomialHeap(const BinomialHeap<T> &src)
+: IHeap<T>(), head_(deepCopy_(src.head_)), size_(src.size_) {
 }
 
 template<typename T>
 BinomialHeap<T>::BinomialHeap(BinomialHeap<T> &&src): BinomialHeap() {
   swap(src);
 }
+
 template<typename T>
 size_t BinomialHeap<T>::size() const {
   return size_;
@@ -116,22 +88,24 @@ template<typename T>
 BinomialHeap<T> &BinomialHeap<T>::operator=(const BinomialHeap<T> &src) {
   BinomialHeap tmp(src);
   swap(tmp);
+  return *this;
 }
 
 template<typename T>
 BinomialHeap<T> &BinomialHeap<T>::operator=(BinomialHeap<T> &&src) {
   swap(src);
+  return *this;
 }
 
 template<typename T>
 void BinomialHeap<T>::swap(BinomialHeap<T> &other) {
-  std::swap(size_, other.size_);
   head_.swap(other.head_);
+  std::swap(size_, other.size_);
 }
 
 template<typename T>
 void BinomialHeap<T>::insert(const T &a) {
-  insert(a);
+  insert(T(a));
 }
 
 template<typename T>
@@ -174,29 +148,6 @@ const T BinomialHeap<T>::top() const {
 template<typename T>
 void BinomialHeap<T>::merge(BinomialHeap<T> &other) {
   merge(std::move(other));
-}
-
-template<typename T>
-std::shared_ptr<typename BinomialHeap<T>::Node_>
-BinomialHeap<T>::merge_(std::shared_ptr<Node_> &a,
-                        std::shared_ptr<Node_> &b) {
-  assert(a->degree == b->degree);
-  if (a->key > b->key) {
-    std::swap(a, b);
-  }
-  a->sibling = b->sibling = nullptr;
-  std::shared_ptr<Node_> res = a;
-  res->degree += b->degree;
-  if (res->child == nullptr) {
-    res->child = b;
-  } else {
-    std::shared_ptr<Node_> ch = res->child;
-    while (ch->sibling != nullptr) {
-      ch = ch->sibling;
-    }
-    ch->sibling = b;
-  }
-  return res;
 }
 
 template<typename T>
@@ -245,22 +196,71 @@ void BinomialHeap<T>::merge(BinomialHeap<T> &&other) {
 
   std::shared_ptr<Node_> curr = head_;
   std::shared_ptr<Node_> prev = nullptr;
-  while (curr->sibling) {
+  while (curr && curr->sibling) {
     if (curr->degree == curr->sibling->degree) {
       std::shared_ptr<Node_> nxt = curr->sibling->sibling;
+      std::shared_ptr<Node_> tmp = merge_(curr, curr->sibling);
+
       if (prev == nullptr) {
-        head_ = merge_(curr, curr->sibling);
-        prev = head_;
+        head_ = tmp;
       } else {
-        prev->sibling = merge_(curr, curr->sibling);
-        prev = prev->sibling;
+        prev->sibling = tmp;
       }
-      prev->sibling = nxt;
-      curr = prev;
+
+      tmp->sibling = nxt;
+      curr = tmp;
+    } else {
+      curr = curr->sibling;
     }
-    curr = curr->sibling;
   }
 }
 
+template<typename T>
+std::shared_ptr<typename BinomialHeap<T>::Node_>
+BinomialHeap<T>::merge_(std::shared_ptr<Node_> a,
+                        std::shared_ptr<Node_> b) {
+  assert(a->degree == b->degree);
+  if (a->key > b->key) {
+    std::swap(a, b);
+  }
+  a->sibling = b->sibling = nullptr;
+  std::shared_ptr<Node_> res = a;
+  res->degree += b->degree;
+  if (res->child == nullptr) {
+    res->child = b;
+  } else {
+    std::shared_ptr<Node_> ch = res->child;
+    while (ch->sibling != nullptr) {
+      ch = ch->sibling;
+    }
+    ch->sibling = b;
+  }
+  return res;
+}
+
+template<typename T>
+std::shared_ptr<typename BinomialHeap<T>::Node_>
+BinomialHeap<T>::deepCopy_(const std::shared_ptr<Node_> &head) {
+  if (head == nullptr) {
+    return nullptr;
+  }
+  std::shared_ptr<Node_> new_head(new Node_(head->key, head->degree));
+  new_head->sibling = deepCopy_(head->sibling);
+  new_head->child = deepCopy_(head->child);
+  return new_head;
+}
+
+template<typename T>
+std::shared_ptr<typename BinomialHeap<T>::Node_>
+BinomialHeap<T>::findMinNode_() const {
+  std::shared_ptr<Node_> ans = head_, current = head_;
+  while (current) {
+    if (current->key < ans->key) {
+      ans = current;
+    }
+    current = current->sibling;
+  }
+  return ans;
+}
 
 #endif  // SRC_BINOMIAL_HEAP_H_

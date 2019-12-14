@@ -51,13 +51,11 @@ TestHeap<T>::~TestHeap() {
 }
 
 template<typename T>
-TestHeap<T>::TestHeap(const TestHeap<T> &src) {
-  source_ = src.source_;
+TestHeap<T>::TestHeap(const TestHeap<T> &src): IHeap<T>(), source_(src.source_) {
 }
 
 template<typename T>
-TestHeap<T>::TestHeap(TestHeap<T> &&src) {
-  source_ = std::move(src.source_);
+TestHeap<T>::TestHeap(TestHeap<T> &&src): IHeap<T>(), source_(std::move(src.source_)) {
 }
 
 template<typename T>
@@ -72,7 +70,7 @@ size_t TestHeap<T>::size() const {
 
 template<typename T>
 void TestHeap<T>::insert(const T &a) {
-  TestHeap<T>::insert(std::move(a));
+  TestHeap<T>::insert(T(a));
 }
 
 template<typename T>
