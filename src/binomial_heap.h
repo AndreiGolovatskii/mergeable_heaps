@@ -22,6 +22,7 @@ class BinomialHeap: public IHeap<T> {
   const T top() const;
 
   void erase();
+  void clear();
 
   void merge(BinomialHeap<T> &b);
   void merge(BinomialHeap<T> &&b);
@@ -138,6 +139,12 @@ void BinomialHeap<T>::erase() {
     current->sibling = min_node->sibling;
   }
   merge(other);
+}
+
+template<typename T>
+void BinomialHeap<T>::clear() {
+  head_ = nullptr;
+  size_ = 0;
 }
 
 template<typename T>

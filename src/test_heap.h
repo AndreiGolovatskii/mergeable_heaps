@@ -23,6 +23,7 @@ class TestHeap: public IHeap<T> {
   const T top() const;
 
   void erase();
+  void clear();
 
   void merge(TestHeap<T> &b);
   void merge(TestHeap<T> &&b);
@@ -86,6 +87,11 @@ const T TestHeap<T>::top() const {
 template<typename T>
 void TestHeap<T>::erase() {
   source_.erase(source_.begin());
+}
+
+template<typename T>
+void TestHeap<T>::clear() {
+  source_.clear();
 }
 
 template<typename T>

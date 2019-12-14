@@ -24,6 +24,7 @@ class LeftistHeap: public IHeap<T> {
   const T top() const;
 
   void erase();
+  void clear();
 
   void merge(LeftistHeap<T> &b);
   void merge(LeftistHeap<T> &&b);
@@ -131,6 +132,12 @@ template<typename T>
 void LeftistHeap<T>::erase() {
   size_ -= 1;
   head_ = merge_(head_->child_left, head_->child_right);
+}
+
+template<typename T>
+void LeftistHeap<T>::clear() {
+  head_ = nullptr;
+  size_ = 0;
 }
 
 template<typename T>

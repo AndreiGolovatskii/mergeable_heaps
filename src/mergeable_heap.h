@@ -15,6 +15,7 @@ class IHeap{
   virtual size_t size() const = 0;
 
   virtual void erase() = 0;
+  virtual void clear() = 0;
 
   virtual ~IHeap() {}
 

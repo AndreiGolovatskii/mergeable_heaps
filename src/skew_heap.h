@@ -24,6 +24,7 @@ class SkewHeap: public IHeap<T> {
   const T top() const;
 
   void erase();
+  void clear();
 
   void merge(SkewHeap<T> &b);
   void merge(SkewHeap<T> &&b);
@@ -127,6 +128,12 @@ template<typename T>
 void SkewHeap<T>::erase() {
   size_ -= 1;
   head_ = merge_(head_->child_left, head_->child_right);
+}
+
+template<typename T>
+void SkewHeap<T>::clear() {
+  head_ = 0;
+  size_ = 0;
 }
 
 template<typename T>

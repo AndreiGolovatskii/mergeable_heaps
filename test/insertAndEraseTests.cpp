@@ -36,6 +36,8 @@ void insertAndEraseTestsInt() {
   }
 
   ASSERT_EQ(a.size(), N);
+  a.clear();
+  ASSERT_EQ(a.size(), 0);
 }
 
 TEST(TestHeapTest, insertAndEraseTestInt) {
