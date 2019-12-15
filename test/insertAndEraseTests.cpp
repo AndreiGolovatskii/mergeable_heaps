@@ -57,7 +57,7 @@ TEST(SkewHeapTest, insertAndEraseTestsInt) {
 }
 
 
-TEST(CommonsStressTest, InsertAndEraseTestInt) {
+TEST(CommonStressTest, InsertAndEraseTestInt) {
   TestHeap<int> test_h;
   BinomialHeap<int> bin_h;
   LeftistHeap<int> left_h;
