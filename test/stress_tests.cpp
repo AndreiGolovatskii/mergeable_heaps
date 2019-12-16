@@ -49,7 +49,6 @@ void extractMin(std::vector<H<T>> &heaps, std::mt19937 &rnd) {
   heaps[ind].erase();
 }
 
-
 template<template<class> class H, typename T>
 void meld(std::vector<H<T>> &heaps, std::mt19937 &rnd) {
   if (heaps.size() < 2) {
@@ -61,13 +60,27 @@ void meld(std::vector<H<T>> &heaps, std::mt19937 &rnd) {
   heaps[ind1].merge(heaps[ind2]);
 }
 
+template<template<class> class H, typename T>
+std::vector<H<T>> prepare_heap(std::mt19937 &rnd, int iter) {
+  std::vector<H<T>> heaps;
+
+  for (int i = 0; i < iter; ++i) {
+    uint v = rnd() % 3;
+    if (v == 0) {
+      addHeap(heaps, rnd);
+    } else if (v == 1) {
+      insert(heaps, rnd);
+    }
+  }
+  return heaps;
+}
 
 template<template<class> class H, typename T>
-std::vector<T> run_test(int seed, int iters) {
+std::vector<T> run_test(int seed, int iter) {
   std::mt19937 rnd(seed);
-  std::vector<H<T>> heaps;
+  std::vector<H<T>> heaps = prepare_heap<H, T>(rnd, iter);
   std::vector<T> result;
-  for (int i = 0; i < iters; ++i) {
+  for (int i = 0; i < iter; ++i) {
     uint v = rnd() % 5;
     if (v == 0) {
       addHeap(heaps, rnd);
@@ -83,7 +96,6 @@ std::vector<T> run_test(int seed, int iters) {
   }
   return result;
 }
-
 
 TEST(BinomialHeapTest, correctStressTest) {
   int seed = 13;
