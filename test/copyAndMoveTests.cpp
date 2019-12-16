@@ -57,12 +57,12 @@ void copyTestsInt() {
   h2.insert(2);
 
   h1 = h2;
-  ASSERT_TRUE(isEqual(h1, h2));
+  ASSERT_TRUE(isEqualInt(h1, h2));
   h2.insert(1);
   ASSERT_EQ(h1.size(), 1);
 
   H h3(h1);
-  ASSERT_TRUE(isEqual(h1, h3));
+  ASSERT_TRUE(isEqualInt(h1, h3));
   h1.insert(1);
   ASSERT_EQ(h3.size(), 1);
 }

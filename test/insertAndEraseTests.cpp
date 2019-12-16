@@ -82,8 +82,8 @@ TEST(CommonStressTest, InsertAndEraseTestInt) {
       }
     }
 
-  ASSERT_TRUE(isEqual(test_h, bin_h));
-  ASSERT_TRUE(isEqual(test_h, left_h));
-  ASSERT_TRUE(isEqual(test_h, skew_h));
+  ASSERT_TRUE(isEqualInt(test_h, bin_h));
+  ASSERT_TRUE(isEqualInt(test_h, left_h));
+  ASSERT_TRUE(isEqualInt(test_h, skew_h));
   }
 }

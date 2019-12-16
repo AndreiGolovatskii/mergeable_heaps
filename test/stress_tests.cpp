@@ -7,14 +7,14 @@
 #include "leftist_heap.h"
 #include "skew_heap.h"
 
-template<template<class> class H, typename T>
-void addHeap(std::vector<H<T>> &heaps, std::mt19937 &rnd) {
-  heaps.push_back(H<T>());
+template<class H>
+void addHeap(std::vector<H> &heaps, std::mt19937 &rnd) {
+  heaps.push_back(H());
   heaps.back().insert(rnd());
 }
 
-template<template<class> class H, typename T>
-void insert(std::vector<H<T>> &heaps, std::mt19937 &rnd) {
+template<class H>
+void insert(std::vector<H> &heaps, std::mt19937 &rnd) {
   if (heaps.size() == 0) {
     return;
   }
@@ -23,8 +23,8 @@ void insert(std::vector<H<T>> &heaps, std::mt19937 &rnd) {
   heaps[ind].insert(rnd());
 }
 
-template<template<class> class H, typename T>
-int getMin(std::vector<H<T>> &heaps, std::mt19937 &rnd) {
+template<class H>
+int getMin(std::vector<H> &heaps, std::mt19937 &rnd) {
   if (heaps.size() == 0) {
     return 0;
   }
@@ -36,8 +36,8 @@ int getMin(std::vector<H<T>> &heaps, std::mt19937 &rnd) {
   return heaps[ind].top();
 }
 
-template<template<class> class H, typename T>
-void extractMin(std::vector<H<T>> &heaps, std::mt19937 &rnd) {
+template<class H>
+void extractMin(std::vector<H> &heaps, std::mt19937 &rnd) {
   if (heaps.size() == 0) {
     return;
   }
@@ -49,8 +49,8 @@ void extractMin(std::vector<H<T>> &heaps, std::mt19937 &rnd) {
   heaps[ind].erase();
 }
 
-template<template<class> class H, typename T>
-void meld(std::vector<H<T>> &heaps, std::mt19937 &rnd) {
+template<class H>
+void meld(std::vector<H> &heaps, std::mt19937 &rnd) {
   if (heaps.size() < 2) {
     return;
   }
@@ -60,9 +60,9 @@ void meld(std::vector<H<T>> &heaps, std::mt19937 &rnd) {
   heaps[ind1].merge(heaps[ind2]);
 }
 
-template<template<class> class H, typename T>
-std::vector<H<T>> prepare_heap(std::mt19937 &rnd, int iter) {
-  std::vector<H<T>> heaps;
+template<class H>
+std::vector<H> prepare_heap(std::mt19937 &rnd, int iter) {
+  std::vector<H> heaps;
 
   for (int i = 0; i < iter; ++i) {
     uint v = rnd() % 3;
@@ -75,11 +75,11 @@ std::vector<H<T>> prepare_heap(std::mt19937 &rnd, int iter) {
   return heaps;
 }
 
-template<template<class> class H, typename T>
-std::vector<T> run_test(int seed, int iter) {
+template<class H>
+std::vector<int> run_test(int seed, int iter) {
   std::mt19937 rnd(seed);
-  std::vector<H<T>> heaps = prepare_heap<H, T>(rnd, iter);
-  std::vector<T> result;
+  std::vector<H> heaps = prepare_heap<H>(rnd, iter);
+  std::vector<int> result;
   for (int i = 0; i < iter; ++i) {
     uint v = rnd() % 5;
     if (v == 0) {
@@ -101,8 +101,8 @@ TEST(BinomialHeapTest, correctStressTest) {
   int seed = 13;
   int iter = 2000;
 
-  auto res1 = run_test<TestHeap, int>(seed, iter);
-  auto res2 = run_test<BinomialHeap, int>(seed, iter);
+  auto res1 = run_test<TestHeap<int>>(seed, iter);
+  auto res2 = run_test<BinomialHeap<int>>(seed, iter);
   ASSERT_EQ(res1, res2);
 }
 
@@ -110,8 +110,8 @@ TEST(LeftistHeapTest, correctStressTest) {
   int seed = 13;
   int iter = 2000;
 
-  auto res1 = run_test<TestHeap, int>(seed, iter);
-  auto res2 = run_test<LeftistHeap, int>(seed, iter);
+  auto res1 = run_test<TestHeap<int>>(seed, iter);
+  auto res2 = run_test<LeftistHeap<int>>(seed, iter);
   ASSERT_EQ(res1, res2);
 }
 
@@ -119,19 +119,19 @@ TEST(SkewHeapTest, correctStressTest) {
   int seed = 13;
   int iter = 2000;
 
-  auto res1 = run_test<TestHeap, int>(seed, iter);
-  auto res2 = run_test<SkewHeap, int>(seed, iter);
+  auto res1 = run_test<TestHeap<int>>(seed, iter);
+  auto res2 = run_test<SkewHeap<int>>(seed, iter);
   ASSERT_EQ(res1, res2);
 }
 
 TEST(BinomialHeapTest, speedStressTest) {
-  run_test<BinomialHeap, int>(1, 1e6);
+  run_test<BinomialHeap<int>>(1, 1e6);
 }
 
 TEST(LeftistHeapTest, speedStressTest) {
-  run_test<LeftistHeap, int>(1, 1e6);
+  run_test<LeftistHeap<int>>(1, 1e6);
 }
 
 TEST(SkewHeapTest, speedStressTest) {
-  run_test<SkewHeap, int>(1, 1e6);
+  run_test<SkewHeap<int>>(1, 1e6);
 }

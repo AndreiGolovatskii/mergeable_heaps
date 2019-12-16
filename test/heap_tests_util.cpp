@@ -3,9 +3,9 @@
 
 #include <vector>
 
-template<template<class> class H, typename T>
-std::vector<T> toVector(H<T> in) {
-  std::vector<T> arr;
+template<class H>
+std::vector<int> toVectorInt(H in) {
+  std::vector<int> arr;
   while (in.size()) {
     arr.push_back(in.top());
     in.erase();
@@ -13,9 +13,9 @@ std::vector<T> toVector(H<T> in) {
   return arr;
 }
 
-template<template<class> class H1, template<class> class H2, typename T>
-bool isEqual(const H1<T> &a, const H2<T> &b) {
-  return toVector(a) == toVector(b);
+template<class H1, class H2>
+bool isEqualInt(const H1 &a, const H2 &b) {
+  return toVectorInt(a) == toVectorInt(b);
 }
 
 #endif  // HEAP_TESTS_UTIL_CPP_
